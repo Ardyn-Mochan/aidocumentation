@@ -1,10 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
-import { Search, Menu, X, ChevronDown } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import SearchDialog from "./SearchDialog";
-
+import { ThemeToggle } from "./ThemeToggle";
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -77,7 +77,7 @@ const Header = () => {
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {/* Search button */}
             <button
               onClick={() => setSearchOpen(true)}
@@ -89,9 +89,12 @@ const Header = () => {
                 ⌘K
               </kbd>
             </button>
+
+            {/* Theme toggle */}
+            <ThemeToggle />
             
-            <Link to="/create">
-              <Button size="sm" className="hidden md:flex h-8 text-sm">
+            <Link to="/create" className="hidden md:block">
+              <Button size="sm" className="h-8 text-sm">
                 Create Docs
               </Button>
             </Link>
