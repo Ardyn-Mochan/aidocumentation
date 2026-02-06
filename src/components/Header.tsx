@@ -13,12 +13,15 @@ const Header = () => {
   const location = useLocation();
 
   const isDocsPage = location.pathname.startsWith("/docs");
+  const isCreatePage = location.pathname === "/create";
+  const isLibraryPage = location.pathname === "/library";
+  const isGeneratedPage = location.pathname.startsWith("/generated");
 
   const navItems = [
     { href: "/docs/getting-started/introduction", label: "Documentation", active: isDocsPage },
+    { href: "/create", label: "Create Docs", active: isCreatePage },
+    { href: "/library", label: "Library", active: isLibraryPage || isGeneratedPage },
     { href: "/docs/api-reference/authentication", label: "API Reference", active: false },
-    { href: "#", label: "Examples", active: false },
-    { href: "#", label: "Changelog", active: false },
   ];
 
   return (
