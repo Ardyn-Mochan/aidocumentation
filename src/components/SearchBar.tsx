@@ -1,19 +1,22 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Search, Sparkles } from "lucide-react";
 
 interface SearchBarProps {
   placeholder?: string;
-  onSearch?: (query: string) => void;
 }
 
-const SearchBar = ({ placeholder = "Search documentation...", onSearch }: SearchBarProps) => {
+const SearchBar = ({ placeholder = "Search documentation..." }: SearchBarProps) => {
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch?.(query);
+    if (query.trim()) {
+      navigate(`/docs/getting-started/introduction?q=${encodeURIComponent(query)}`);
+    }
   };
 
   return (
