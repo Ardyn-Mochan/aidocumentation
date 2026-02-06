@@ -2,11 +2,17 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import FeatureCard from "./FeatureCard";
-import { Zap, Code2, Shield, Blocks, BookOpen, Rocket, ArrowRight } from "lucide-react";
+import { Zap, Code2, Shield, Blocks, BookOpen, Rocket, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 
 const HeroSection = () => {
   const features = [
+    {
+      icon: Sparkles,
+      title: "Generate Docs",
+      description: "AI-powered documentation generator. Enter any topic and get comprehensive docs instantly.",
+      href: "/create",
+    },
     {
       icon: Rocket,
       title: "Quick Start",
@@ -36,12 +42,6 @@ const HeroSection = () => {
       title: "Security",
       description: "Best practices for securing your AI applications and data.",
       href: "/docs/security/apikeys",
-    },
-    {
-      icon: BookOpen,
-      title: "Tutorials",
-      description: "Step-by-step tutorials for common use cases and advanced patterns.",
-      href: "/docs/getting-started/concepts",
     },
   ];
 
@@ -136,24 +136,34 @@ const HeroSection = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="border-t border-border">
+      <section className="border-t border-border bg-gradient-to-b from-primary/5 to-transparent">
         <div className="max-w-4xl mx-auto px-4 md:px-8 py-16 md:py-20 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm text-primary mb-6"
+          >
+            <Sparkles className="h-4 w-4" />
+            AI-Powered Documentation
+          </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-3xl font-bold text-foreground mb-4"
           >
-            Ready to start building?
+            Generate documentation for any topic
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-lg text-muted-foreground mb-8"
+            className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto"
           >
-            Get your API key and start building with AI Cloud today.
+            Enter any technology, framework, or concept and our AI will create comprehensive, 
+            multi-page documentation with examples, tutorials, and API references.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -162,13 +172,18 @@ const HeroSection = () => {
             transition={{ delay: 0.2 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button size="lg" className="gap-2">
-              Get API Key
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button size="lg" variant="outline">
-              Contact Sales
-            </Button>
+            <Link to="/create">
+              <Button size="lg" className="gap-2">
+                <Sparkles className="h-4 w-4" />
+                Generate Documentation
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link to="/library">
+              <Button size="lg" variant="outline">
+                View Library
+              </Button>
+            </Link>
           </motion.div>
         </div>
       </section>

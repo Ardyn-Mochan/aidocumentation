@@ -14,7 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      doc_sections: {
+        Row: {
+          content: string
+          created_at: string
+          doc_id: string
+          icon: string | null
+          id: string
+          order_index: number
+          slug: string
+          title: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          doc_id: string
+          icon?: string | null
+          id?: string
+          order_index?: number
+          slug: string
+          title: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          doc_id?: string
+          icon?: string | null
+          id?: string
+          order_index?: number
+          slug?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "doc_sections_doc_id_fkey"
+            columns: ["doc_id"]
+            isOneToOne: false
+            referencedRelation: "generated_docs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      generated_docs: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          topic: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          topic: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          topic?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
