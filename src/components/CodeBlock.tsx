@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Check, Copy } from "lucide-react";
 import { Highlight, themes } from "prism-react-renderer";
 
@@ -18,7 +17,6 @@ const CodeBlock = ({ code, language = "typescript", title }: CodeBlockProps) => 
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Map language names
   const getLanguage = (lang: string) => {
     const langMap: Record<string, string> = {
       ts: "typescript",
@@ -34,19 +32,19 @@ const CodeBlock = ({ code, language = "typescript", title }: CodeBlockProps) => 
   };
 
   return (
-    <div className="group relative rounded-xl border border-border bg-card overflow-hidden">
+    <div className="group relative rounded-lg border border-border overflow-hidden">
       {/* Header */}
       {title && (
         <div className="flex items-center justify-between border-b border-border bg-secondary/50 px-4 py-2">
           <span className="text-xs font-medium text-muted-foreground">{title}</span>
-          <span className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             {language}
           </span>
         </div>
       )}
 
       {/* Code content */}
-      <div className="relative">
+      <div className="relative bg-[#1a1a1a] dark:bg-[#0d0d0d]">
         <Highlight
           theme={themes.nightOwl}
           code={code.trim()}
@@ -59,7 +57,7 @@ const CodeBlock = ({ code, language = "typescript", title }: CodeBlockProps) => 
             >
               {tokens.map((line, i) => (
                 <div key={i} {...getLineProps({ line })} className="table-row">
-                  <span className="table-cell pr-4 text-right text-muted-foreground/40 select-none text-xs">
+                  <span className="table-cell pr-4 text-right text-neutral-500 select-none text-xs w-8">
                     {i + 1}
                   </span>
                   <span className="table-cell">
@@ -74,13 +72,12 @@ const CodeBlock = ({ code, language = "typescript", title }: CodeBlockProps) => 
         </Highlight>
 
         {/* Copy button */}
-        <motion.button
+        <button
           onClick={handleCopy}
-          className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-muted-foreground opacity-0 transition-all hover:bg-muted hover:text-foreground group-hover:opacity-100"
-          whileTap={{ scale: 0.95 }}
+          className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-md bg-neutral-700/50 text-neutral-400 opacity-0 transition-all hover:bg-neutral-600/50 hover:text-neutral-200 group-hover:opacity-100"
         >
-          {copied ? <Check className="h-4 w-4 text-primary" /> : <Copy className="h-4 w-4" />}
-        </motion.button>
+          {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+        </button>
       </div>
     </div>
   );

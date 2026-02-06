@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { docsNavigation } from "@/lib/docsData";
 import { cn } from "@/lib/utils";
@@ -12,7 +11,6 @@ interface DocsSidebarProps {
 
 const DocsSidebar = ({ activeSection, activePage }: DocsSidebarProps) => {
   const [expanded, setExpanded] = useState<string[]>([activeSection]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!expanded.includes(activeSection)) {
@@ -27,7 +25,7 @@ const DocsSidebar = ({ activeSection, activePage }: DocsSidebarProps) => {
   };
 
   return (
-    <aside className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 border-r border-border bg-sidebar overflow-y-auto">
+    <aside className="fixed left-0 top-14 h-[calc(100vh-3.5rem)] w-60 border-r border-border bg-background overflow-y-auto">
       <nav className="p-4 space-y-1">
         {docsNavigation.map((section) => {
           const Icon = section.icon;
@@ -39,58 +37,46 @@ const DocsSidebar = ({ activeSection, activePage }: DocsSidebarProps) => {
               <button
                 onClick={() => toggleExpand(section.slug)}
                 className={cn(
-                  "flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "flex w-full items-center justify-between rounded-md px-2.5 py-1.5 text-sm transition-colors",
                   isActiveSection 
-                    ? "text-foreground bg-sidebar-accent" 
-                    : "text-sidebar-foreground hover:bg-sidebar-accent"
+                    ? "text-foreground font-medium" 
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <span className="flex items-center gap-3">
-                  <span className={cn(isActiveSection ? "text-primary" : "text-muted-foreground")}>
-                    <Icon className="h-4 w-4" />
-                  </span>
+                <span className="flex items-center gap-2.5">
+                  <Icon className="h-4 w-4" />
                   {section.title}
                 </span>
-                <motion.span
-                  animate={{ rotate: isExpanded ? 90 : 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                </motion.span>
+                <ChevronRight 
+                  className={cn(
+                    "h-3.5 w-3.5 text-muted-foreground transition-transform duration-200",
+                    isExpanded && "rotate-90"
+                  )} 
+                />
               </button>
 
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="ml-4 border-l border-border pl-3 mt-1 space-y-1">
-                      {section.pages.map((page) => {
-                        const isActivePage = isActiveSection && activePage === page.slug;
-                        
-                        return (
-                          <Link
-                            key={page.slug}
-                            to={`/docs/${section.slug}/${page.slug}`}
-                            className={cn(
-                              "block rounded-md px-3 py-1.5 text-sm transition-colors",
-                              isActivePage
-                                ? "text-primary bg-primary/10 font-medium"
-                                : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
-                            )}
-                          >
-                            {page.title}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {isExpanded && (
+                <div className="ml-4 pl-3 border-l border-border mt-1 space-y-0.5">
+                  {section.pages.map((page) => {
+                    const isActivePage = isActiveSection && activePage === page.slug;
+                    
+                    return (
+                      <Link
+                        key={page.slug}
+                        to={`/docs/${section.slug}/${page.slug}`}
+                        className={cn(
+                          "block rounded-md px-2.5 py-1.5 text-sm transition-colors",
+                          isActivePage
+                            ? "text-foreground font-medium"
+                            : "text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        {page.title}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           );
         })}

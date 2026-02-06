@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Lightbulb, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import CodeBlock from "./CodeBlock";
 import { getDocContent, docsNavigation } from "@/lib/docsData";
 
@@ -52,50 +52,50 @@ const DocContent = ({ section, page }: DocContentProps) => {
   }
 
   return (
-    <main className="flex-1 lg:ml-64 xl:mr-56 min-h-screen">
-      <div className="max-w-3xl mx-auto px-6 lg:px-8 py-12">
+    <main className="flex-1 lg:ml-60 xl:mr-52 min-h-screen">
+      <div className="max-w-3xl mx-auto px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <motion.nav
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="flex items-center gap-2 text-sm text-muted-foreground mb-8"
+          className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6"
         >
           <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
-          <ArrowRight className="h-3 w-3" />
+          <span>/</span>
           <Link to="/docs" className="hover:text-foreground transition-colors">Docs</Link>
-          <ArrowRight className="h-3 w-3" />
+          <span>/</span>
           <span className="text-foreground">{content.title}</span>
         </motion.nav>
 
         {/* Title */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
+          className="mb-8"
         >
-          <h1 className="text-4xl font-bold text-foreground mb-4">
+          <h1 className="text-3xl font-bold text-foreground mb-3 tracking-tight">
             {content.title}
           </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed">
+          <p className="text-muted-foreground leading-relaxed">
             {content.description}
           </p>
         </motion.div>
 
         {/* Content sections */}
-        <div className="space-y-12">
+        <div className="space-y-10">
           {content.sections.map((section, index) => (
             <motion.section
               key={section.id}
               id={section.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * index }}
+              transition={{ delay: 0.05 * index }}
             >
-              <h2 className="text-2xl font-semibold text-foreground mb-4">
+              <h2 className="text-xl font-semibold text-foreground mb-3">
                 {section.title}
               </h2>
               
-              <div className="prose prose-invert max-w-none">
+              <div className="prose-docs">
                 {section.content.split('\n\n').map((paragraph, i) => {
                   // Handle markdown-style tables
                   if (paragraph.includes('|')) {
@@ -107,12 +107,12 @@ const DocContent = ({ section, page }: DocContentProps) => {
                       );
                       
                       return (
-                        <div key={i} className="overflow-x-auto my-6">
-                          <table className="w-full text-sm border-collapse">
+                        <div key={i} className="overflow-x-auto my-4 rounded-md border border-border">
+                          <table className="w-full text-sm">
                             <thead>
-                              <tr className="border-b border-border">
+                              <tr className="border-b border-border bg-secondary/50">
                                 {headers.map((header, j) => (
-                                  <th key={j} className="text-left py-3 px-4 font-semibold text-foreground">
+                                  <th key={j} className="text-left py-2 px-4 font-medium text-foreground">
                                     {header.trim()}
                                   </th>
                                 ))}
@@ -120,9 +120,9 @@ const DocContent = ({ section, page }: DocContentProps) => {
                             </thead>
                             <tbody>
                               {rows.map((row, j) => (
-                                <tr key={j} className="border-b border-border/50">
+                                <tr key={j} className="border-b border-border last:border-0">
                                   {row.map((cell, k) => (
-                                    <td key={k} className="py-3 px-4 text-muted-foreground">
+                                    <td key={k} className="py-2 px-4 text-muted-foreground">
                                       {cell.trim()}
                                     </td>
                                   ))}
@@ -142,12 +142,12 @@ const DocContent = ({ section, page }: DocContentProps) => {
                     const ListTag = isOrdered ? 'ol' : 'ul';
                     
                     return (
-                      <ListTag key={i} className={`my-4 space-y-2 ${isOrdered ? 'list-decimal' : 'list-disc'} list-inside`}>
+                      <ListTag key={i} className={`my-3 space-y-1.5 ${isOrdered ? 'list-decimal' : 'list-disc'} list-inside text-muted-foreground`}>
                         {items.map((item, j) => (
-                          <li key={j} className="text-muted-foreground">
+                          <li key={j}>
                             <span dangerouslySetInnerHTML={{ 
                               __html: item.replace(/^[-\d.]\s*/, '')
-                                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-foreground">$1</strong>')
+                                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-foreground font-medium">$1</strong>')
                             }} />
                           </li>
                         ))}
@@ -159,10 +159,10 @@ const DocContent = ({ section, page }: DocContentProps) => {
                   return (
                     <p 
                       key={i} 
-                      className="text-muted-foreground mb-4 leading-relaxed"
+                      className="text-muted-foreground mb-3 leading-relaxed"
                       dangerouslySetInnerHTML={{ 
                         __html: paragraph
-                          .replace(/\*\*(.*?)\*\*/g, '<strong class="text-foreground">$1</strong>')
+                          .replace(/\*\*(.*?)\*\*/g, '<strong class="text-foreground font-medium">$1</strong>')
                           .replace(/`([^`]+)`/g, '<code class="rounded bg-secondary px-1.5 py-0.5 font-mono text-xs text-foreground">$1</code>')
                       }}
                     />
@@ -171,7 +171,7 @@ const DocContent = ({ section, page }: DocContentProps) => {
               </div>
 
               {section.code && (
-                <div className="mt-6">
+                <div className="mt-4">
                   <CodeBlock 
                     code={section.code.content} 
                     language={section.code.language} 
@@ -187,15 +187,15 @@ const DocContent = ({ section, page }: DocContentProps) => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="mt-16 flex items-center justify-between border-t border-border pt-8"
+          transition={{ delay: 0.3 }}
+          className="mt-12 flex items-center justify-between border-t border-border pt-6"
         >
           {prevPage ? (
             <Link
               to={`/docs/${prevPage.section}/${prevPage.page}`}
-              className="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              className="group flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+              <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
               <span>{prevPage.title}</span>
             </Link>
           ) : (
@@ -205,10 +205,10 @@ const DocContent = ({ section, page }: DocContentProps) => {
           {nextPage ? (
             <Link
               to={`/docs/${nextPage.section}/${nextPage.page}`}
-              className="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              className="group flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               <span>{nextPage.title}</span>
-              <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
           ) : (
             <div />

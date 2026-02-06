@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { getDocContent } from "@/lib/docsData";
 import { cn } from "@/lib/utils";
 
@@ -42,9 +41,9 @@ const TableOfContents = ({ section, page }: TableOfContentsProps) => {
   };
 
   return (
-    <aside className="fixed right-0 top-16 h-[calc(100vh-4rem)] w-56 border-l border-border bg-background overflow-y-auto">
+    <aside className="fixed right-0 top-14 h-[calc(100vh-3.5rem)] w-52 border-l border-border bg-background overflow-y-auto">
       <div className="p-4">
-        <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+        <h4 className="text-xs font-medium text-muted-foreground mb-3">
           On this page
         </h4>
         <nav className="space-y-1">
@@ -53,9 +52,9 @@ const TableOfContents = ({ section, page }: TableOfContentsProps) => {
               key={item.id}
               onClick={() => scrollToSection(item.id)}
               className={cn(
-                "block w-full text-left text-sm py-1.5 px-2 rounded-md transition-colors",
+                "block w-full text-left text-sm py-1 transition-colors",
                 activeId === item.id
-                  ? "text-primary bg-primary/5 font-medium"
+                  ? "text-foreground font-medium"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
