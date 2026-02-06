@@ -35,9 +35,11 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center gap-4 lg:gap-6">
             <Link to="/" className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-glow-secondary">
-                <span className="text-sm font-bold text-primary-foreground">AI</span>
-              </div>
+              <img 
+                src="/favicon.png" 
+                alt="AI Cloud Docs" 
+                className="h-8 w-8 rounded-lg"
+              />
               <span className="text-lg font-semibold text-foreground">
                 AI Cloud <span className="hidden sm:inline text-muted-foreground font-normal">Docs</span>
               </span>
