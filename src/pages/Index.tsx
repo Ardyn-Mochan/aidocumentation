@@ -1,24 +1,14 @@
-import { useState } from "react";
 import Header from "@/components/Header";
-import DocsSidebar from "@/components/DocsSidebar";
 import HeroSection from "@/components/HeroSection";
-import DocContent from "@/components/DocContent";
 import AIAssistant from "@/components/AIAssistant";
+import Footer from "@/components/Footer";
 
 const Index = () => {
-  const [showDocs, setShowDocs] = useState(false);
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <DocsSidebar />
-      
-      {showDocs ? (
-        <DocContent />
-      ) : (
-        <HeroSection />
-      )}
-      
+      <HeroSection />
+      <Footer />
       <AIAssistant />
     </div>
   );

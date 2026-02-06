@@ -1,37 +1,70 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowRight, Lightbulb, ChevronLeft, ChevronRight } from "lucide-react";
 import CodeBlock from "./CodeBlock";
-import { ArrowRight, Lightbulb, AlertTriangle } from "lucide-react";
+import { getDocContent, docsNavigation } from "@/lib/docsData";
 
-const DocContent = () => {
-  const exampleCode = `import { AICloud } from '@ai-cloud/sdk';
+interface DocContentProps {
+  section: string;
+  page: string;
+}
 
-const client = new AICloud({
-  apiKey: process.env.AI_CLOUD_API_KEY,
-});
-
-const response = await client.chat.completions.create({
-  model: 'ai-cloud-4',
-  messages: [
-    { role: 'user', content: 'Hello, AI Cloud!' }
-  ],
-});
-
-console.log(response.choices[0].message);`;
+const DocContent = ({ section, page }: DocContentProps) => {
+  const content = getDocContent(section, page);
+  
+  // Find current section and page index for navigation
+  const sectionIndex = docsNavigation.findIndex(s => s.slug === section);
+  const currentSection = docsNavigation[sectionIndex];
+  const pageIndex = currentSection?.pages.findIndex(p => p.slug === page) ?? -1;
+  
+  // Calculate prev/next pages
+  let prevPage: { section: string; page: string; title: string } | null = null;
+  let nextPage: { section: string; page: string; title: string } | null = null;
+  
+  if (pageIndex > 0) {
+    prevPage = {
+      section: section,
+      page: currentSection.pages[pageIndex - 1].slug,
+      title: currentSection.pages[pageIndex - 1].title,
+    };
+  } else if (sectionIndex > 0) {
+    const prevSection = docsNavigation[sectionIndex - 1];
+    prevPage = {
+      section: prevSection.slug,
+      page: prevSection.pages[prevSection.pages.length - 1].slug,
+      title: prevSection.pages[prevSection.pages.length - 1].title,
+    };
+  }
+  
+  if (currentSection && pageIndex < currentSection.pages.length - 1) {
+    nextPage = {
+      section: section,
+      page: currentSection.pages[pageIndex + 1].slug,
+      title: currentSection.pages[pageIndex + 1].title,
+    };
+  } else if (sectionIndex < docsNavigation.length - 1) {
+    const nextSection = docsNavigation[sectionIndex + 1];
+    nextPage = {
+      section: nextSection.slug,
+      page: nextSection.pages[0].slug,
+      title: nextSection.pages[0].title,
+    };
+  }
 
   return (
-    <main className="ml-64 pt-16 min-h-screen">
-      <div className="max-w-4xl mx-auto px-8 py-12">
+    <main className="flex-1 lg:ml-64 xl:mr-56 min-h-screen">
+      <div className="max-w-3xl mx-auto px-6 lg:px-8 py-12">
         {/* Breadcrumb */}
         <motion.nav
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="flex items-center gap-2 text-sm text-muted-foreground mb-8"
         >
-          <a href="#" className="hover:text-foreground transition-colors">Docs</a>
+          <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
           <ArrowRight className="h-3 w-3" />
-          <a href="#" className="hover:text-foreground transition-colors">Getting Started</a>
+          <Link to="/docs" className="hover:text-foreground transition-colors">Docs</Link>
           <ArrowRight className="h-3 w-3" />
-          <span className="text-foreground">Quick Start</span>
+          <span className="text-foreground">{content.title}</span>
         </motion.nav>
 
         {/* Title */}
@@ -41,139 +74,113 @@ console.log(response.choices[0].message);`;
           className="mb-12"
         >
           <h1 className="text-4xl font-bold text-foreground mb-4">
-            Quick Start Guide
+            {content.title}
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Get up and running with AI Cloud in minutes. This guide will walk you through
-            installation, authentication, and making your first API call.
+            {content.description}
           </p>
         </motion.div>
 
         {/* Content sections */}
         <div className="space-y-12">
-          {/* Installation */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <h2 className="text-2xl font-semibold text-foreground mb-4" id="installation">
-              Installation
-            </h2>
-            <p className="text-muted-foreground mb-6">
-              Install the AI Cloud SDK using your preferred package manager:
-            </p>
-            <CodeBlock
-              code="npm install @ai-cloud/sdk"
-              language="bash"
-              title="Terminal"
-            />
-          </motion.section>
-
-          {/* Authentication */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <h2 className="text-2xl font-semibold text-foreground mb-4" id="authentication">
-              Authentication
-            </h2>
-            <p className="text-muted-foreground mb-6">
-              Set your API key as an environment variable. You can generate an API key from
-              the <a href="#" className="text-primary hover:underline">dashboard</a>.
-            </p>
-
-            {/* Info callout */}
-            <div className="flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/5 p-4 mb-6">
-              <Lightbulb className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-              <div className="text-sm">
-                <p className="font-medium text-foreground mb-1">Pro tip</p>
-                <p className="text-muted-foreground">
-                  Store your API key in a <code className="rounded bg-secondary px-1.5 py-0.5 font-mono text-xs">.env</code> file
-                  and never commit it to version control.
-                </p>
+          {content.sections.map((section, index) => (
+            <motion.section
+              key={section.id}
+              id={section.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * index }}
+            >
+              <h2 className="text-2xl font-semibold text-foreground mb-4">
+                {section.title}
+              </h2>
+              
+              <div className="prose prose-invert max-w-none">
+                {section.content.split('\n\n').map((paragraph, i) => {
+                  // Handle markdown-style tables
+                  if (paragraph.includes('|')) {
+                    const lines = paragraph.split('\n').filter(line => line.trim());
+                    if (lines.length >= 2) {
+                      const headers = lines[0].split('|').filter(cell => cell.trim());
+                      const rows = lines.slice(2).map(line => 
+                        line.split('|').filter(cell => cell.trim())
+                      );
+                      
+                      return (
+                        <div key={i} className="overflow-x-auto my-6">
+                          <table className="w-full text-sm border-collapse">
+                            <thead>
+                              <tr className="border-b border-border">
+                                {headers.map((header, j) => (
+                                  <th key={j} className="text-left py-3 px-4 font-semibold text-foreground">
+                                    {header.trim()}
+                                  </th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {rows.map((row, j) => (
+                                <tr key={j} className="border-b border-border/50">
+                                  {row.map((cell, k) => (
+                                    <td key={k} className="py-3 px-4 text-muted-foreground">
+                                      {cell.trim()}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      );
+                    }
+                  }
+                  
+                  // Handle lists
+                  if (paragraph.startsWith('- ') || paragraph.match(/^\d\. /)) {
+                    const items = paragraph.split('\n');
+                    const isOrdered = paragraph.match(/^\d\. /);
+                    const ListTag = isOrdered ? 'ol' : 'ul';
+                    
+                    return (
+                      <ListTag key={i} className={`my-4 space-y-2 ${isOrdered ? 'list-decimal' : 'list-disc'} list-inside`}>
+                        {items.map((item, j) => (
+                          <li key={j} className="text-muted-foreground">
+                            <span dangerouslySetInnerHTML={{ 
+                              __html: item.replace(/^[-\d.]\s*/, '')
+                                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-foreground">$1</strong>')
+                            }} />
+                          </li>
+                        ))}
+                      </ListTag>
+                    );
+                  }
+                  
+                  // Regular paragraphs with bold text support
+                  return (
+                    <p 
+                      key={i} 
+                      className="text-muted-foreground mb-4 leading-relaxed"
+                      dangerouslySetInnerHTML={{ 
+                        __html: paragraph
+                          .replace(/\*\*(.*?)\*\*/g, '<strong class="text-foreground">$1</strong>')
+                          .replace(/`([^`]+)`/g, '<code class="rounded bg-secondary px-1.5 py-0.5 font-mono text-xs text-foreground">$1</code>')
+                      }}
+                    />
+                  );
+                })}
               </div>
-            </div>
 
-            <CodeBlock
-              code="export AI_CLOUD_API_KEY=your-api-key-here"
-              language="bash"
-              title=".env"
-            />
-          </motion.section>
-
-          {/* First API Call */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <h2 className="text-2xl font-semibold text-foreground mb-4" id="first-call">
-              Your First API Call
-            </h2>
-            <p className="text-muted-foreground mb-6">
-              Initialize the client and make a chat completion request:
-            </p>
-            <CodeBlock code={exampleCode} language="typescript" title="index.ts" />
-          </motion.section>
-
-          {/* Warning callout */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4">
-              <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-              <div className="text-sm">
-                <p className="font-medium text-foreground mb-1">Rate Limits</p>
-                <p className="text-muted-foreground">
-                  Free tier accounts are limited to 100 requests per minute. Upgrade to a paid
-                  plan for higher limits. See <a href="#" className="text-primary hover:underline">Rate Limits</a> for details.
-                </p>
-              </div>
-            </div>
-          </motion.section>
-
-          {/* Next steps */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <h2 className="text-2xl font-semibold text-foreground mb-4">Next Steps</h2>
-            <div className="grid gap-4 md:grid-cols-2">
-              <a
-                href="#"
-                className="group flex items-center gap-3 rounded-lg border border-border bg-card p-4 transition-all hover:border-primary/50 hover:bg-secondary/50"
-              >
-                <div className="flex-1">
-                  <h3 className="font-medium text-foreground group-hover:text-primary transition-colors">
-                    Explore Models
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Learn about available AI models and their capabilities
-                  </p>
+              {section.code && (
+                <div className="mt-6">
+                  <CodeBlock 
+                    code={section.code.content} 
+                    language={section.code.language} 
+                    title={section.code.title} 
+                  />
                 </div>
-                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-              </a>
-              <a
-                href="#"
-                className="group flex items-center gap-3 rounded-lg border border-border bg-card p-4 transition-all hover:border-primary/50 hover:bg-secondary/50"
-              >
-                <div className="flex-1">
-                  <h3 className="font-medium text-foreground group-hover:text-primary transition-colors">
-                    API Reference
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Complete API documentation with examples
-                  </p>
-                </div>
-                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-              </a>
-            </div>
-          </motion.section>
+              )}
+            </motion.section>
+          ))}
         </div>
 
         {/* Footer navigation */}
@@ -183,20 +190,29 @@ console.log(response.choices[0].message);`;
           transition={{ delay: 0.6 }}
           className="mt-16 flex items-center justify-between border-t border-border pt-8"
         >
-          <a
-            href="#"
-            className="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowRight className="h-4 w-4 rotate-180 transition-transform group-hover:-translate-x-1" />
-            <span>Introduction</span>
-          </a>
-          <a
-            href="#"
-            className="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <span>Installation</span>
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </a>
+          {prevPage ? (
+            <Link
+              to={`/docs/${prevPage.section}/${prevPage.page}`}
+              className="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+              <span>{prevPage.title}</span>
+            </Link>
+          ) : (
+            <div />
+          )}
+          
+          {nextPage ? (
+            <Link
+              to={`/docs/${nextPage.section}/${nextPage.page}`}
+              className="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <span>{nextPage.title}</span>
+              <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          ) : (
+            <div />
+          )}
         </motion.div>
       </div>
     </main>
