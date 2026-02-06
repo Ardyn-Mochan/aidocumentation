@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, Copy } from "lucide-react";
+import { Highlight, themes } from "prism-react-renderer";
 
 interface CodeBlockProps {
   code: string;
@@ -17,6 +18,21 @@ const CodeBlock = ({ code, language = "typescript", title }: CodeBlockProps) => 
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // Map language names
+  const getLanguage = (lang: string) => {
+    const langMap: Record<string, string> = {
+      ts: "typescript",
+      js: "javascript",
+      py: "python",
+      sh: "bash",
+      shell: "bash",
+      json: "json",
+      jsx: "jsx",
+      tsx: "tsx",
+    };
+    return langMap[lang.toLowerCase()] || lang.toLowerCase();
+  };
+
   return (
     <div className="group relative rounded-xl border border-border bg-card overflow-hidden">
       {/* Header */}
@@ -31,9 +47,31 @@ const CodeBlock = ({ code, language = "typescript", title }: CodeBlockProps) => 
 
       {/* Code content */}
       <div className="relative">
-        <pre className="overflow-x-auto p-4 text-sm">
-          <code className="font-mono text-foreground">{code}</code>
-        </pre>
+        <Highlight
+          theme={themes.nightOwl}
+          code={code.trim()}
+          language={getLanguage(language) as any}
+        >
+          {({ className, style, tokens, getLineProps, getTokenProps }) => (
+            <pre
+              className="overflow-x-auto p-4 text-sm font-mono"
+              style={{ ...style, backgroundColor: "transparent", margin: 0 }}
+            >
+              {tokens.map((line, i) => (
+                <div key={i} {...getLineProps({ line })} className="table-row">
+                  <span className="table-cell pr-4 text-right text-muted-foreground/40 select-none text-xs">
+                    {i + 1}
+                  </span>
+                  <span className="table-cell">
+                    {line.map((token, key) => (
+                      <span key={key} {...getTokenProps({ token })} />
+                    ))}
+                  </span>
+                </div>
+              ))}
+            </pre>
+          )}
+        </Highlight>
 
         {/* Copy button */}
         <motion.button

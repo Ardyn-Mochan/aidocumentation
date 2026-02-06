@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import SearchDialog from "./SearchDialog";
+import VersionSelector from "./VersionSelector";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -29,15 +30,20 @@ const Header = () => {
       >
         <div className="flex h-16 items-center justify-between px-4 md:px-6">
           {/* Logo */}
-          <div className="flex items-center gap-6 lg:gap-8">
+          <div className="flex items-center gap-4 lg:gap-6">
             <Link to="/" className="flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-glow-secondary">
                 <span className="text-sm font-bold text-primary-foreground">AI</span>
               </div>
               <span className="text-lg font-semibold text-foreground">
-                AI Cloud <span className="text-muted-foreground font-normal">Docs</span>
+                AI Cloud <span className="hidden sm:inline text-muted-foreground font-normal">Docs</span>
               </span>
             </Link>
+
+            {/* Version selector */}
+            <div className="hidden md:block">
+              <VersionSelector />
+            </div>
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1">
@@ -59,24 +65,24 @@ const Header = () => {
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-2 md:gap-3">
             {/* Search button */}
             <button
               onClick={() => setSearchOpen(true)}
               className="flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground bg-secondary rounded-lg hover:bg-secondary/80 transition-colors"
             >
               <Search className="h-4 w-4" />
-              <span className="hidden md:inline">Search...</span>
-              <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+              <span className="hidden sm:inline">Search...</span>
+              <kbd className="hidden lg:inline-flex h-5 items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
                 ⌘K
               </kbd>
             </button>
 
             <a
               href="#"
-              className="hidden md:flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="hidden md:flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors p-2"
             >
-              <Github className="h-4 w-4" />
+              <Github className="h-5 w-5" />
             </a>
             
             <Button variant="default" size="sm" className="hidden md:flex">
@@ -102,6 +108,9 @@ const Header = () => {
             className="lg:hidden border-t border-border bg-background"
           >
             <nav className="flex flex-col p-4 gap-1">
+              <div className="mb-3">
+                <VersionSelector />
+              </div>
               {navItems.map((item) => (
                 <Link
                   key={item.label}
