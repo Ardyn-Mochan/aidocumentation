@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Sparkles, FileText, Loader2, ArrowRight, Zap, Database, Shield } from "lucide-react";
+import { Sparkles, FileText, Loader2, ArrowRight, Zap, Database } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -10,12 +10,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
 const exampleTopics = [
-  { label: "React Hooks", description: "Comprehensive guide to React Hooks" },
-  { label: "REST API Design", description: "Best practices for designing RESTful APIs" },
-  { label: "Docker", description: "Container orchestration with Docker" },
-  { label: "TypeScript", description: "TypeScript fundamentals and advanced patterns" },
-  { label: "PostgreSQL", description: "PostgreSQL database administration" },
-  { label: "GraphQL", description: "Building GraphQL APIs" },
+  "React Hooks",
+  "REST API Design",
+  "Docker",
+  "TypeScript",
+  "PostgreSQL",
+  "GraphQL",
 ];
 
 const CreateDocsPage = () => {
@@ -39,7 +39,6 @@ const CreateDocsPage = () => {
     setIsGenerating(true);
     setProgress(0);
 
-    // Simulate progress while waiting for AI
     const progressInterval = setInterval(() => {
       setProgress((prev) => Math.min(prev + Math.random() * 15, 90));
     }, 500);
@@ -76,7 +75,6 @@ const CreateDocsPage = () => {
         description: `Created ${data.sections?.length || 0} sections for "${topic}"`,
       });
 
-      // Navigate to the generated docs
       setTimeout(() => {
         navigate(`/generated/${data.docId}`);
       }, 500);
@@ -98,120 +96,111 @@ const CreateDocsPage = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       
-      <main className="flex-1 pt-24 pb-16">
-        <div className="container max-w-4xl mx-auto px-4">
-          {/* Hero */}
+      <main className="flex-1 pt-14">
+        <div className="max-w-2xl mx-auto px-4 py-12 md:py-16">
+          {/* Header */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
+            className="mb-8"
           >
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm text-primary mb-6">
-              <Sparkles className="h-4 w-4" />
-              AI-Powered Documentation Generator
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Generate Comprehensive Docs
+            <h1 className="text-3xl font-bold text-foreground mb-3 tracking-tight">
+              Create Documentation
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Enter any topic and our AI will create a complete, multi-page documentation 
-              suite with examples, tutorials, and API references.
+            <p className="text-muted-foreground">
+              Enter any topic and our AI will generate comprehensive, multi-page documentation.
             </p>
           </motion.div>
 
-          {/* Main Form */}
+          {/* Form */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-card border border-border rounded-2xl p-8 mb-8"
+            transition={{ delay: 0.05 }}
+            className="space-y-6"
           >
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Documentation Topic *
-                </label>
-                <Input
-                  value={topic}
-                  onChange={(e) => setTopic(e.target.value)}
-                  placeholder="e.g., React Hooks, Kubernetes, Python FastAPI..."
-                  className="text-lg h-14"
-                  disabled={isGenerating}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Additional Context (optional)
-                </label>
-                <Textarea
-                  value={additionalContext}
-                  onChange={(e) => setAdditionalContext(e.target.value)}
-                  placeholder="Add any specific requirements, target audience, or focus areas..."
-                  className="min-h-[100px]"
-                  disabled={isGenerating}
-                />
-              </div>
-
-              {/* Progress bar */}
-              {isGenerating && (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Generating documentation...</span>
-                    <span className="text-primary font-medium">{Math.round(progress)}%</span>
-                  </div>
-                  <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-gradient-to-r from-primary to-glow-secondary"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${progress}%` }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              <Button
-                onClick={handleGenerate}
-                disabled={isGenerating || !topic.trim()}
-                size="lg"
-                className="w-full h-14 text-lg"
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Generating Documentation...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="mr-2 h-5 w-5" />
-                    Generate Documentation
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </>
-                )}
-              </Button>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Topic
+              </label>
+              <Input
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                placeholder="e.g., React Hooks, Kubernetes, Python FastAPI"
+                className="h-11"
+                disabled={isGenerating}
+              />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Additional context <span className="text-muted-foreground font-normal">(optional)</span>
+              </label>
+              <Textarea
+                value={additionalContext}
+                onChange={(e) => setAdditionalContext(e.target.value)}
+                placeholder="Add any specific requirements, target audience, or focus areas..."
+                className="min-h-[100px] resize-none"
+                disabled={isGenerating}
+              />
+            </div>
+
+            {/* Progress */}
+            {isGenerating && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Generating documentation...</span>
+                  <span className="text-foreground font-medium">{Math.round(progress)}%</span>
+                </div>
+                <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-foreground"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress}%` }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+              </div>
+            )}
+
+            <Button
+              onClick={handleGenerate}
+              disabled={isGenerating || !topic.trim()}
+              className="w-full h-11"
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  Generate Documentation
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </>
+              )}
+            </Button>
           </motion.div>
 
           {/* Example Topics */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mb-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            className="mt-8 pt-8 border-t border-border"
           >
-            <h3 className="text-sm font-medium text-muted-foreground mb-4 text-center">
+            <p className="text-sm text-muted-foreground mb-3">
               Try these popular topics
-            </h3>
-            <div className="flex flex-wrap justify-center gap-2">
+            </p>
+            <div className="flex flex-wrap gap-2">
               {exampleTopics.map((example) => (
                 <button
-                  key={example.label}
-                  onClick={() => setTopic(example.label)}
+                  key={example}
+                  onClick={() => setTopic(example)}
                   disabled={isGenerating}
-                  className="px-4 py-2 rounded-full bg-secondary/50 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors disabled:opacity-50"
+                  className="px-3 py-1.5 rounded-md border border-border bg-background text-sm text-muted-foreground hover:text-foreground hover:border-foreground/20 transition-colors disabled:opacity-50"
                 >
-                  {example.label}
+                  {example}
                 </button>
               ))}
             </div>
@@ -219,36 +208,30 @@ const CreateDocsPage = () => {
 
           {/* Features */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="grid md:grid-cols-3 gap-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.15 }}
+            className="mt-12 grid gap-4 sm:grid-cols-3"
           >
-            <div className="bg-card border border-border rounded-xl p-6 text-center">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <FileText className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold text-foreground mb-2">Multi-Page Structure</h3>
-              <p className="text-sm text-muted-foreground">
-                Generates 6-8 comprehensive sections with sidebar navigation
+            <div className="rounded-lg border border-border p-4">
+              <FileText className="h-5 w-5 text-muted-foreground mb-2" />
+              <h3 className="text-sm font-medium text-foreground mb-1">Multi-Page</h3>
+              <p className="text-xs text-muted-foreground">
+                6-8 comprehensive sections with navigation
               </p>
             </div>
-            <div className="bg-card border border-border rounded-xl p-6 text-center">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <Database className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold text-foreground mb-2">Saved to Cloud</h3>
-              <p className="text-sm text-muted-foreground">
-                All generated docs are saved and accessible anytime
+            <div className="rounded-lg border border-border p-4">
+              <Database className="h-5 w-5 text-muted-foreground mb-2" />
+              <h3 className="text-sm font-medium text-foreground mb-1">Saved to Cloud</h3>
+              <p className="text-xs text-muted-foreground">
+                All docs are saved and accessible anytime
               </p>
             </div>
-            <div className="bg-card border border-border rounded-xl p-6 text-center">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <Zap className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold text-foreground mb-2">Export Options</h3>
-              <p className="text-sm text-muted-foreground">
-                Download as Markdown or PDF for offline use
+            <div className="rounded-lg border border-border p-4">
+              <Zap className="h-5 w-5 text-muted-foreground mb-2" />
+              <h3 className="text-sm font-medium text-foreground mb-1">Export</h3>
+              <p className="text-xs text-muted-foreground">
+                Download as Markdown or PDF
               </p>
             </div>
           </motion.div>

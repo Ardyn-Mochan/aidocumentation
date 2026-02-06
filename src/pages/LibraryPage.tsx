@@ -110,17 +110,17 @@ const LibraryPage = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       
-      <main className="flex-1 pt-24 pb-16">
-        <div className="container max-w-6xl mx-auto px-4">
+      <main className="flex-1 pt-14">
+        <div className="max-w-4xl mx-auto px-4 py-12 md:py-16">
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-foreground">Documentation Library</h1>
+              <h1 className="text-3xl font-bold text-foreground tracking-tight">Library</h1>
               <p className="text-muted-foreground mt-1">
                 Browse and manage your generated documentation
               </p>
             </div>
-            <Button asChild>
+            <Button asChild size="sm">
               <Link to="/create">
                 <Plus className="h-4 w-4 mr-2" />
                 Create New
@@ -129,38 +129,38 @@ const LibraryPage = () => {
           </div>
 
           {/* Search */}
-          <div className="relative mb-8">
+          <div className="relative mb-6">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search documentation..."
-              className="pl-10"
+              className="pl-10 h-10"
             />
           </div>
 
           {/* Content */}
           {isLoading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
           ) : filteredDocs.length === 0 ? (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-center py-20"
             >
-              <BookOpen className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
-              <h2 className="text-xl font-semibold text-foreground mb-2">
+              <BookOpen className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
+              <h2 className="text-lg font-medium text-foreground mb-2">
                 {searchQuery ? "No matching documentation" : "No documentation yet"}
               </h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-sm text-muted-foreground mb-6">
                 {searchQuery
                   ? "Try a different search term"
                   : "Create your first AI-generated documentation"}
               </p>
               {!searchQuery && (
-                <Button asChild>
+                <Button asChild size="sm">
                   <Link to="/create">
                     <Plus className="h-4 w-4 mr-2" />
                     Create Documentation
@@ -169,39 +169,37 @@ const LibraryPage = () => {
               )}
             </motion.div>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="space-y-2">
               {filteredDocs.map((doc, index) => (
                 <motion.div
                   key={doc.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="group relative bg-card border border-border rounded-xl p-6 hover:border-primary/50 transition-colors"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: index * 0.03 }}
+                  className="group relative flex items-center justify-between gap-4 p-4 rounded-lg border border-border hover:bg-secondary/50 transition-colors"
                 >
-                  <Link to={`/generated/${doc.id}`} className="block">
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <FileText className="h-5 w-5 text-primary" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">
-                          {doc.topic}
-                        </h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
-                          {doc.description}
-                        </p>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-3">
-                          <Calendar className="h-3 w-3" />
-                          {formatDate(doc.created_at)}
-                        </div>
-                      </div>
+                  <Link to={`/generated/${doc.id}`} className="flex-1 flex items-center gap-4 min-w-0">
+                    <div className="w-9 h-9 rounded-md bg-secondary flex items-center justify-center flex-shrink-0">
+                      <FileText className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-sm font-medium text-foreground truncate">
+                        {doc.topic}
+                      </h3>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {doc.description}
+                      </p>
+                    </div>
+                    <div className="hidden sm:flex items-center gap-1 text-xs text-muted-foreground flex-shrink-0">
+                      <Calendar className="h-3 w-3" />
+                      {formatDate(doc.created_at)}
                     </div>
                   </Link>
 
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <button
-                        className="absolute top-4 right-4 p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-all"
+                        className="p-2 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Trash2 className="h-4 w-4" />
